@@ -105,7 +105,7 @@ app.post("/webhook", async (req, res) => {
   } else res.status(402).send("Miss Pay")
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 443
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`)
 })
