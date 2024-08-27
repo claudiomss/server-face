@@ -61,12 +61,12 @@ const crypto = require("crypto")
 const app = express()
 app.use(express.json())
 
-// const accessToken = process.env.TOKEN
-// const pixelId = process.env.PIXEL
+const accessToken = process.env.TOKEN
+const pixelId = process.env.PIXEL
 
-const accessToken =
-  "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
-const pixelId = "1011636240246252"
+// const accessToken =
+//   "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
+// const pixelId = "1011636240246252"
 
 function hashValue(value) {
   return crypto.createHash("sha256").update(value).digest("hex")
