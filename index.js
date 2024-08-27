@@ -56,12 +56,21 @@
 const express = require("express")
 const axios = require("axios")
 require("dotenv").config()
+const crypto = require("crypto")
 
 const app = express()
 app.use(express.json())
 
 const accessToken = process.env.TOKEN
 const pixelId = process.env.PIXEL
+
+// const accessToken =
+//   "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
+// const pixelId = "1011636240246252"
+
+function hashValue(value) {
+  return crypto.createHash("sha256").update(value).digest("hex")
+}
 
 app.post("/webhook", async (req, res) => {
   const eventData = req.body
@@ -78,14 +87,22 @@ app.post("/webhook", async (req, res) => {
           data: [
             {
               event_name: "Purchase",
-              event_time: Math.floor(Date.now() / 1000),
-              event_source_url: "https://deolho.site/inicio/",
-              action_source: "website",
-              custom_data: {
-                currency: "BRL",
-                value: value,
-                status: statusTransaction,
+              event_time: Math.floor(new Date() / 1000), // Tempo atual em segundos desde o Unix Epoch
+              user_data: {
+                em: hashValue("email@example.com"), // Exemplo de email hashado
+                ph: hashValue("+5511999999999"), // Exemplo de telefone hashado
+                // Adicione mais dados de cliente conforme necessário e hash
               },
+              custom_data: {
+                currency: "BRL", // Moeda da transação
+                value: value, // Valor da transação
+                content_name: "WhySpy", // Nome do produto (opcional)
+                content_category: "Info", // Categoria do produto (opcional)
+                // content_ids: ["ID_PRODUTO"], // IDs dos produtos comprados (opcional)
+                content_type: "product", // Tipo de conteúdo (opcional)
+              },
+              event_source_url: "https://deolho.site/inicio", // URL da página onde o evento ocorreu
+              action_source: "website", // Fonte do evento, neste caso, website
             },
           ],
           access_token: accessToken,
