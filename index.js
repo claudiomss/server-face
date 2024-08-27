@@ -60,9 +60,8 @@ require("dotenv").config()
 const app = express()
 app.use(express.json())
 
-const accessToken =
-  "EAAHqLIBp79EBO7M9JQZCVvi0U6H56pSEY6R3eba6CckuB4Rpl7COpvVUQjk2n4SM2rBkn700upiWMQjzhEnUPfjLbWfqzZBT6gGBlTlRgiNynZAIvBYCGNLtOqzFwkiZACZADs9XZCw2EDOtDxUFbZAIJwiLtuTbnKCq98lm5iNZCKB7m0QFq49p0Czu0z52UZBXq9QZDZD"
-const pixelId = "4636511609906695"
+const accessToken = process.env.TOKEN
+const pixelId = process.env.PIXEL
 
 app.post("/webhook", async (req, res) => {
   const eventData = req.body
