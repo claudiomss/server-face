@@ -27,7 +27,7 @@ app.post("/webhook", async (req, res) => {
     currency: "BRL",
   }
 
-  if (statusTransaction == "PAID_OUT")
+  if (statusTransaction == "PAID_OUT") {
     try {
       await axios.post(`https://graph.facebook.com/v12.0/${pixelId}/events`, {
         data: [payload],
@@ -42,6 +42,7 @@ app.post("/webhook", async (req, res) => {
       )
       res.status(500).send("Failed to send event to Facebook")
     }
+  } else res.status(402).send("Miss Pay")
 })
 
 app.get("/", async (req, res) => {
