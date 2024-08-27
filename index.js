@@ -28,11 +28,25 @@ app.post("/webhook", async (req, res) => {
   }
 
   if (statusTransaction == "PAID_OUT") {
+    // try {
+    //   await axios.post(`https://graph.facebook.com/v12.0/${pixelId}/events`, {
+    //     data: [payload],
+    //     access_token: accessToken,
+    //   })
+
     try {
-      await axios.post(`https://graph.facebook.com/v12.0/${pixelId}/events`, {
-        data: [payload],
-        access_token: accessToken,
-      })
+      await axios.post(
+        `https://graph.facebook.com/v12.0/${pixelId}/events`,
+        {
+          data: [payload],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
 
       res.status(200).send("Event sent to Facebook successfully")
     } catch (error) {
