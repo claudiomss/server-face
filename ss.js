@@ -87,7 +87,7 @@ app.use(cors())
 // Ou configure de forma mais específica
 app.use(
   cors({
-    origin: "*", // Substitua pela origem do seu frontend
+    origin: "http://127.0.0.1:5500/", // Substitua pela origem do seu frontend
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
