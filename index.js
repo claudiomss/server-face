@@ -143,9 +143,9 @@ app.use(cors())
 // Ou configure de forma mais específica
 app.use(
   cors({
-    origin: "*", // Substitua pela origem do seu frontend
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    origin: "*", // Permitir todas as origens
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos HTTP permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Headers permitidos
   })
 )
 
