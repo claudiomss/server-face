@@ -53,7 +53,7 @@ function hashValue(value) {
 }
 
 async function sendPurchaseEvent(pixelId, accessToken) {
-  const url = `https://graph.facebook.com/v17.0/${pixelId}/events`
+  const url = `https://graph.facebook.com/v19.0/${pixelId}/events`
 
   const eventData = {
     data: [
@@ -91,11 +91,11 @@ async function sendPurchaseEvent(pixelId, accessToken) {
   }
 }
 
-// const accessToken =
-//   "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
-// const pixelId = "1011636240246252"
+const accessToken =
+  "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
+const pixelId = "1011636240246252"
 
-const accessToken = process.env.TOKEN222
-const pixelId = process.env.PIXEL222
+// const accessToken = process.env.TOKEN222
+// const pixelId = process.env.PIXEL222
 
 sendPurchaseEvent(pixelId, accessToken)
