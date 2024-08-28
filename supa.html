@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>salvar tuto</p>
+    <script>
+      // Função para capturar os parâmetros da URL
+      function getParamsFromURL2() {
+        const urlParams = new URLSearchParams(window.location.search)
+        const params = {}
+
+        for (const [key, value] of urlParams.entries()) {
+          params[key] = value
+        }
+
+        return params
+      }
+
+      // Função para enviar os parâmetros via POST
+      async function sendPostRequest2(url) {
+        const params = getParamsFromURL2()
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(params),
+          })
+
+          if (response.ok) {
+            const data = await response.json()
+            console.log("Sucesso:", data)
+          } else {
+            console.error("Erro:", response.statusText)
+          }
+        } catch (error) {
+          console.error("Erro:", error)
+        }
+      }
+
+      // Exemplo de uso
+      const postUrl = "http://localhost:3000/coleta"
+      sendPostRequest2(postUrl)
+    </script>
+  </body>
+</html>
