@@ -150,6 +150,41 @@ app.use(
 )
 
 // Define uma rota para a página web
+// app.post("/webhook", (req, res) => {
+//   const eventData = req.body
+
+//   // Extraindo informações do webhook
+//   const { statusTransaction } = eventData
+
+//   if (statusTransaction == "PAID_OUT") {
+//     res.send(
+//       "<html><!-- Meta Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '4636511609906695');fbq('track', 'AddToCart');</script><noscript><img height='1' width='1' style='display:none'src='https://www.facebook.com/tr?id=4636511609906695&ev=PageView&noscript=1'/></noscript><!-- End Meta Pixel Code --><body><h1>Olá, Mundo!</h1></body></html>"
+//     )
+//   } else res.status(402).send("Miss Pay")
+// })
+
+async function openAndClosePage() {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+
+  try {
+    // Substitua pela URL da sua página
+    await page.goto("https://deolho.site/inicio/app/compra", {
+      waitUntil: "networkidle2",
+    })
+
+    // Aguarda 10 segundos
+    // await page.waitForTimeout(10000)
+    setTimeout(async () => {
+      await browser.close()
+    }, [3000])
+
+    // Fechar a página
+  } catch (error) {
+    console.error("Erro:", error)
+  }
+}
+
 app.post("/webhook", (req, res) => {
   const eventData = req.body
 
@@ -157,9 +192,8 @@ app.post("/webhook", (req, res) => {
   const { statusTransaction } = eventData
 
   if (statusTransaction == "PAID_OUT") {
-    res.send(
-      "<html><!-- Meta Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '4636511609906695');fbq('track', 'AddToCart');</script><noscript><img height='1' width='1' style='display:none'src='https://www.facebook.com/tr?id=4636511609906695&ev=PageView&noscript=1'/></noscript><!-- End Meta Pixel Code --><body><h1>Olá, Mundo!</h1></body></html>"
-    )
+    openAndClosePage()
+    res.status(200).send("Sucesso")
   } else res.status(402).send("Miss Pay")
 })
 

@@ -70,6 +70,7 @@
 //   console.log(`Servidor rodando em http://localhost:${PORT}`)
 // })
 
+const puppeteer = require("puppeteer")
 const express = require("express")
 const { createClient } = require("@supabase/supabase-js")
 const app = express()
@@ -139,6 +140,77 @@ app.post("/coleta", async (req, res) => {
   try {
     await supabase.from("wenhook_data").insert({ dados: data })
 
+    res.status(200).send("Sucesso")
+  } catch (error) {
+    res.status(500).send("Fail")
+  }
+})
+
+async function openAndClosePage() {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+
+  try {
+    // Substitua pela URL da sua página
+    await page.goto("https://deolho.site/", {
+      waitUntil: "networkidle2",
+    })
+
+    // Aguarda 10 segundos
+    // await page.waitForTimeout(10000)
+    setTimeout(async () => {
+      await browser.close()
+    }, [3000])
+
+    // Fechar a página
+  } catch (error) {
+    console.error("Erro:", error)
+  }
+}
+
+app.get("/compra", async (req, res) => {
+  try {
+    openAndClosePage()
+    res.status(200).send("Sucesso")
+  } catch (error) {
+    res.status(500).send("Fail")
+  }
+})
+
+app.get("/purchase", async (req, res) => {
+  async function runScript() {
+    try {
+      // Fazer uma requisição para obter o conteúdo da página
+      const response = await axios.get(url)
+
+      // Criar um DOM virtual usando JSDOM
+      const { window } = new JSDOM(response.data)
+      const { document } = window
+
+      // Encontrar e executar o script do Pixel do Facebook
+      const script = document.querySelector(
+        'script[src="https://connect.facebook.net/en_US/fbevents.js"]'
+      )
+      if (script) {
+        // Simular a execução do script
+        const fbq = function () {
+          console.log("fbq chamado com argumentos:", arguments)
+        }
+
+        // Simular a função fbq
+        eval(script.textContent)
+
+        // Executar a função fbq com o evento Purchase
+        fbq("init", "1011636240246252")
+        fbq("track", "Purchase", { value: 47.9, currency: "BRL" })
+      }
+    } catch (error) {
+      console.error("Erro ao executar o script:", error)
+    }
+  }
+
+  try {
+    runScript()
     res.status(200).send("Sucesso")
   } catch (error) {
     res.status(500).send("Fail")
