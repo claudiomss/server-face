@@ -1,6 +1,8 @@
 const express = require("express")
 const { createClient } = require("@supabase/supabase-js")
 const app = express()
+const https = require("https")
+const fs = require("fs")
 
 const supabaseUrl = "https://oqyirdgdlowlcifwwfez.supabase.co"
 const supabaseAnonKey =
@@ -8,6 +10,10 @@ const supabaseAnonKey =
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 const cors = require("cors")
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/servertt.online/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/servertt.online/fullchain.pem"),
+}
 
 // Middleware para lidar com JSON no corpo da requisição
 app.use(express.json())
@@ -67,7 +73,102 @@ app.post("/cok", cors(), async (req, res) => {
   }
 })
 
-const PORT = 3000
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`)
+async function sendPurchaseEvent(data) {
+  const axios = require("axios")
+  const accessToken =
+    "EAAGmZBgCmBa0BOZCpy3qZAeJEbMPspePaZA04Qfr4fHQ9srxnSFZCOjPDAZAyHIwAlzmhdLcKzfmAj8bjM50pTEWvJLZBB4CwE0oWZCji3mVCsTtob0Gy2pub4azWwyWKzEy1ZCf8v2HzX9n0Cl66yN1wPk5bIUZBB4b51qvSJpVMg6siwdyBymMqgoZAXZC6LotctdCMgZDZD"
+  const pixelId = "1011636240246252"
+  const url = `https://graph.facebook.com/v13.0/${pixelId}/events`
+
+  const eventData = {
+    data: [
+      {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: "website",
+        event_source_url: data.event_source_url,
+        user_data: {
+          client_ip_address: data.client_ip_address,
+          client_user_agent: data.client_user_agent,
+          fbc: data.fbc,
+          fbp: data.fbp,
+          // email: data.email_hash,
+        },
+        custom_data: {
+          currency: "BRL",
+          value: data.value,
+          content_ids: data.content_ids,
+          contents: data.contents,
+          content_type: "product",
+        },
+      },
+    ],
+    access_token: accessToken,
+  }
+
+  try {
+    const response = await axios.post(url, eventData)
+    console.log("Evento enviado com sucesso:", response.data)
+  } catch (error) {
+    console.error(
+      "Erro ao enviar o evento:",
+      error.response ? error.response.data : error.message
+    )
+  }
+}
+
+app.post("/webhook", async (req, res) => {
+  const reqData = req.body
+  const { statusTransaction, value, requestNumber } = reqData
+
+  // Capturando o IP do cliente
+  const clientIpAddress =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress
+
+  // Capturando o User Agent do cliente
+  const clientUserAgent = req.headers["user-agent"]
+
+  if (statusTransaction == "PAID_OUT") {
+    try {
+      const { data } = await supabase
+        .from("wenhook_data")
+        .select("fbc,fbp")
+        .eq("requestNumber", requestNumber)
+        .single()
+
+      // Exemplo de dados de evento
+      const eventData = {
+        client_ip_address: clientIpAddress,
+        client_user_agent: clientUserAgent,
+        fbc: data.fbc, // Recebendo os cookies via body
+        fbp: data.fbp, // Recebendo os cookies via body
+        // fbc: null, // Recebendo os cookies via body
+        // fbp: null, // Recebendo os cookies via body
+        // email_hash: req.body.email_hash, // Recebendo o e-mail em hash via body
+        event_source_url: "https://deolho.site/", // Recebendo a URL de origem via body
+        value: value, // Valor da compra
+        content_ids: ["whatspy"], // IDs dos conteúdos comprados
+        contents: [{ id: "whatspy", quantity: 1 }], // Informações sobre os conteúdos comprados
+      }
+
+      sendPurchaseEvent(eventData)
+
+      return res.status(200).send("Sucesso envio dados")
+    } catch (error) {
+      return res.status(400).send("Fail Envio")
+    }
+  }
+  res.status(500).send("Fail Pay")
+
+  // Chame a função para enviar o evento ao Facebook Conversion API
+  // console.log(eventData)
+})
+
+// const PORT = 3000
+// app.listen(PORT, () => {
+//   console.log(`Servidor rodando em http://localhost:${PORT}`)
+// })
+
+https.createServer(options, app).listen(443, () => {
+  console.log("Server is running on https://servertt.online")
 })

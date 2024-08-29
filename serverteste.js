@@ -3,7 +3,10 @@ const app = express()
 
 app.use(express.json())
 
-app.post("/evento-compra", (req, res) => {
+app.post("/webhook", (req, res) => {
+  const reqData = req.body
+  const { statusTransaction, value } = reqData
+
   // Capturando o IP do cliente
   const clientIpAddress =
     req.headers["x-forwarded-for"] || req.connection.remoteAddress
