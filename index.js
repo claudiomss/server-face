@@ -16,9 +16,13 @@ app.use(cors())
 // Ou configure de forma mais específica
 app.use(
   cors({
-    origin: "https://deolho.site/inicio/app/compra/", // Substitua pela origem do seu frontend
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    origin: "*", // Permite qualquer origem
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos HTTP
+    allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
+    exposedHeaders: ["Authorization"], // Exponha cabeçalhos específicos
+    credentials: true, // Permite o envio de cookies e credenciais
+    preflightContinue: false, // Não passe para o próximo middleware no preflight
+    optionsSuccessStatus: 204, // Define o status de sucesso para preflight
   })
 )
 
