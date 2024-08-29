@@ -37,14 +37,16 @@
       //   setCookie("username", "JohnDoe", 7) // Define um cookie chamado 'username' com valor 'JohnDoe' que expira em 7 dias.
 
       async function sendPostRequest2(url) {
-        const username = getCookie("username")
+        // const username = getCookie("username")
+        const username = "oaoa"
         const dataSend = {
           nome: username,
         }
         console.log(username)
 
         try {
-          const response = await fetch(url, {
+          console.log("aki")
+          await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -52,19 +54,14 @@
             body: JSON.stringify(dataSend),
           })
 
-          if (response.ok) {
-            const data = await response.json()
-            console.log("Sucesso:", data)
-          } else {
-            console.error("Erro:", response.statusText)
-          }
+          console.log("Sucesso")
         } catch (error) {
           console.error("Erro:", error)
         }
       }
 
       // Exemplo de uso
-      const postUrl = "http://localhost:3000/cok"
+      const postUrl = "https://server-face.vercel.app/cok"
       sendPostRequest2(postUrl)
     </script>
   </body>
