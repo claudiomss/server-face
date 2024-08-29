@@ -129,6 +129,31 @@ async function sendPurchaseEvent(data) {
   }
 }
 
+// Funções auxiliares para extrair partes dos parâmetros
+function extractCampaignName(campaign) {
+  return campaign.split("|")[0]
+}
+
+function extractCampaignId(campaign) {
+  return campaign.split("|")[1]
+}
+
+function extractAdsetName(medium) {
+  return medium.split("|")[0]
+}
+
+function extractAdsetId(medium) {
+  return medium.split("|")[1]
+}
+
+function extractAdName(content) {
+  return content.split("|")[0]
+}
+
+function extractAdId(cmcAdid) {
+  return cmcAdid ? cmcAdid.replace(/^\[|\]$/g, "") : "" // Ajuste conforme necessário
+}
+
 app.post("/webhook", async (req, res) => {
   const reqData = req.body
   const { statusTransaction, value, requestNumber } = reqData
@@ -149,13 +174,14 @@ app.post("/webhook", async (req, res) => {
         .single()
 
       const url = data.urlCamp
-      const urlParams = new URLSearchParams(new URL(url).search)
+      const urlObj = new URL(url)
+      const urlParams = new URLSearchParams(urlObj.search)
 
       const utmSource = urlParams.get("utm_source")
       const utmCampaign = urlParams.get("utm_campaign")
       const utmMedium = urlParams.get("utm_medium")
       const utmContent = urlParams.get("utm_content")
-      const cmcAdid = urlParams.get("cmc_adid")
+      const cmcAdid = urlParams.get("xcod") // Utilizando 'xcod' para obter o 'cmc_adid'
 
       // Exemplo de dados de evento
       const eventData = {
@@ -167,12 +193,12 @@ app.post("/webhook", async (req, res) => {
         value: value, // Valor da compra
         content_ids: ["whatspy"], // IDs dos conteúdos comprados
         contents: [{ id: "whatspy", quantity: 1 }], // Informações sobre os conteúdos comprados
-        campaignName: utmCampaign.split("|")[0], // Ajuste conforme necessário
-        campaignId: utmCampaign.split("|")[1], // Ajuste conforme necessário
-        adsetName: utmMedium.split("|")[0], // Ajuste conforme necessário
-        adsetId: utmMedium.split("|")[1], // Ajuste conforme necessário
-        adName: utmContent, // Ajuste conforme necessário
-        adId: cmcAdid.replace("fb_", ""), // Ajuste conforme necessário
+        campaignName: extractCampaignName(utmCampaign),
+        campaignId: extractCampaignId(utmCampaign),
+        adsetName: extractAdsetName(utmMedium),
+        adsetId: extractAdsetId(utmMedium),
+        adName: extractAdName(utmContent),
+        adId: extractAdId(cmcAdid),
       }
 
       sendPurchaseEvent(eventData)
