@@ -174,7 +174,7 @@ app.post("/webhook", async (req, res) => {
         .single()
 
       console.log(error)
-      console.log("Dados Banco:", data)
+      console.log(data)
 
       const url = await data.urlCamp
       const urlObj = new URL(url)
@@ -204,7 +204,7 @@ app.post("/webhook", async (req, res) => {
         adId: extractAdId(cmcAdid),
       }
 
-      console.log("Data Evento Face", eventData)
+      console.log(eventData)
 
       await sendPurchaseEvent(eventData)
 
