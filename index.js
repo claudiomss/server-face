@@ -107,11 +107,11 @@ async function sendPurchaseEvent(data) {
           content_ids: data.content_ids,
           contents: data.contents,
           content_type: "product",
-          utm_source: data.campaignName || null,
-          utm_campaign: `${data.campaignName}|${data.campaignId}` || null,
-          utm_medium: `${data.adsetName}|${data.adsetId}` || null,
-          utm_content: data.adName || null,
-          cmc_adid: `fb_${data.adId}` || null,
+          utm_source: data.campaignName,
+          utm_campaign: `${data.campaignName}|${data.campaignId}`,
+          utm_medium: `${data.adsetName}|${data.adsetId}`,
+          utm_content: data.adName,
+          cmc_adid: `fb_${data.adId}`,
         },
       },
     ],
@@ -169,11 +169,13 @@ app.post("/webhook", async (req, res) => {
     try {
       const { data } = await supabase
         .from("wenhook_data")
-        .select("fbc,fbp, urlCamp, client_ip_address, client_user_agent")
+        .select("fbc,fbp,urlCamp,client_ip_address,client_user_agent")
         .eq("requestNumber", requestNumber)
         .single()
 
-      const url = data.urlCamp
+      console.log(data)
+
+      const url = await data.urlCamp
       const urlObj = new URL(url)
       const urlParams = new URLSearchParams(urlObj.search)
 
@@ -201,7 +203,9 @@ app.post("/webhook", async (req, res) => {
         adId: extractAdId(cmcAdid),
       }
 
-      sendPurchaseEvent(eventData)
+      console.log(eventData)
+
+      await sendPurchaseEvent(eventData)
 
       return res.status(200).send("Sucesso envio dados")
     } catch (error) {
