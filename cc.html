@@ -17,6 +17,8 @@
         document.cookie = name + "=" + (value || "") + expires + "; path=/"
       }
 
+      setCookie("_fbc", "JohnDoe", 7)
+
       function getCookie(name) {
         const nameEQ = name + "="
         const ca = document.cookie.split(";")
@@ -34,7 +36,7 @@
       //   console.log(username)
 
       // Exemplo de uso:
-      //   setCookie("username", "JohnDoe", 7) // Define um cookie chamado 'username' com valor 'JohnDoe' que expira em 7 dias.
+      // setCookie("username", "JohnDoe", 7) // Define um cookie chamado 'username' com valor 'JohnDoe' que expira em 7 dias.
 
       async function sendPostRequest2(url, requestNumber) {
         const cookFBC = getCookie("_fbc")

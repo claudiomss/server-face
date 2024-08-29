@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Capturar URL Completa</title>
   </head>
-  <body></body>
+  <body>
+    <p id="urlDisplay"></p>
+
+    <script>
+      // Captura a URL completa
+      var fullUrl = window.location.href
+
+      // Exibe a URL no elemento com id "urlDisplay"
+      document.getElementById("urlDisplay").innerText = fullUrl
+    </script>
+  </body>
 </html>

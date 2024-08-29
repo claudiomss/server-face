@@ -52,14 +52,21 @@ app.get("/", cors(), async (req, res) => {
 
 app.post("/cok", cors(), async (req, res) => {
   const data = req.body
-  const { _fbc, _fbp, requestNumber } = data
+  const { _fbc, _fbp, requestNumber, urlCamp, idTransaction } = data
 
   console.log("Received request:", data)
 
   try {
-    const { error } = await supabase
-      .from("wenhook_data")
-      .insert({ fbc: _fbc, fbp: _fbp, requestNumber: requestNumber })
+    const { error } = await supabase.from("wenhook_data").insert({
+      fbc: _fbc,
+      fbp: _fbp,
+      requestNumber: requestNumber,
+      urlCamp: urlCamp,
+      idTransaction: idTransaction,
+      client_ip_address:
+        req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+      client_user_agent: req.headers["user-agent"],
+    })
 
     if (error) {
       console.error("Error inserting data:", error)
@@ -100,6 +107,11 @@ async function sendPurchaseEvent(data) {
           content_ids: data.content_ids,
           contents: data.contents,
           content_type: "product",
+          utm_source: data.campaignName || null,
+          utm_campaign: `${data.campaignName}|${data.campaignId}` || null,
+          utm_medium: `${data.adsetName}|${data.adsetId}` || null,
+          utm_content: data.adName || null,
+          cmc_adid: `fb_${data.adId}` || null,
         },
       },
     ],
@@ -122,33 +134,45 @@ app.post("/webhook", async (req, res) => {
   const { statusTransaction, value, requestNumber } = reqData
 
   // Capturando o IP do cliente
-  const clientIpAddress =
-    req.headers["x-forwarded-for"] || req.connection.remoteAddress
+  // const clientIpAddress =
+  //   req.headers["x-forwarded-for"] || req.connection.remoteAddress
 
   // Capturando o User Agent do cliente
-  const clientUserAgent = req.headers["user-agent"]
+  // const clientUserAgent = req.headers["user-agent"]
 
   if (statusTransaction == "PAID_OUT") {
     try {
       const { data } = await supabase
         .from("wenhook_data")
-        .select("fbc,fbp")
+        .select("fbc,fbp, urlCamp, client_ip_address, client_user_agent")
         .eq("requestNumber", requestNumber)
         .single()
 
+      const url = data.urlCamp
+      const urlParams = new URLSearchParams(new URL(url).search)
+
+      const utmSource = urlParams.get("utm_source")
+      const utmCampaign = urlParams.get("utm_campaign")
+      const utmMedium = urlParams.get("utm_medium")
+      const utmContent = urlParams.get("utm_content")
+      const cmcAdid = urlParams.get("cmc_adid")
+
       // Exemplo de dados de evento
       const eventData = {
-        client_ip_address: clientIpAddress,
-        client_user_agent: clientUserAgent,
+        client_ip_address: data.client_ip_address,
+        client_user_agent: data.client_user_agent,
         fbc: data.fbc, // Recebendo os cookies via body
         fbp: data.fbp, // Recebendo os cookies via body
-        // fbc: null, // Recebendo os cookies via body
-        // fbp: null, // Recebendo os cookies via body
-        // email_hash: req.body.email_hash, // Recebendo o e-mail em hash via body
-        event_source_url: "https://deolho.site/", // Recebendo a URL de origem via body
+        event_source_url: url, // Recebendo a URL de origem via body
         value: value, // Valor da compra
         content_ids: ["whatspy"], // IDs dos conteúdos comprados
         contents: [{ id: "whatspy", quantity: 1 }], // Informações sobre os conteúdos comprados
+        campaignName: utmCampaign.split("|")[0], // Ajuste conforme necessário
+        campaignId: utmCampaign.split("|")[1], // Ajuste conforme necessário
+        adsetName: utmMedium.split("|")[0], // Ajuste conforme necessário
+        adsetId: utmMedium.split("|")[1], // Ajuste conforme necessário
+        adName: utmContent, // Ajuste conforme necessário
+        adId: cmcAdid.replace("fb_", ""), // Ajuste conforme necessário
       }
 
       sendPurchaseEvent(eventData)
