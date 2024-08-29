@@ -54,7 +54,7 @@ app.post("/cok", cors(), async (req, res) => {
   const data = req.body
   const { _fbc, _fbp, requestNumber, urlCamp, idTransaction } = data
 
-  console.log("Received request:", data)
+  // console.log("Received request:", data)
 
   try {
     const { error } = await supabase.from("wenhook_data").insert({
@@ -167,13 +167,14 @@ app.post("/webhook", async (req, res) => {
 
   if (statusTransaction == "PAID_OUT") {
     try {
-      const { data } = await supabase
+      const { error, data } = await supabase
         .from("wenhook_data")
         .select("fbc,fbp,urlCamp,client_ip_address,client_user_agent")
         .eq("requestNumber", requestNumber)
         .single()
 
-      console.log(data)
+      if (error) console.log(error)
+      console.log("Dados Banco:", data)
 
       const url = await data.urlCamp
       const urlObj = new URL(url)
@@ -203,7 +204,7 @@ app.post("/webhook", async (req, res) => {
         adId: extractAdId(cmcAdid),
       }
 
-      console.log(eventData)
+      console.log("Data Evento Face", eventData)
 
       await sendPurchaseEvent(eventData)
 
