@@ -11,16 +11,16 @@ const cors = require("cors")
 
 // Middleware para lidar com JSON no corpo da requisição
 
-// app.use(cors())
+app.use(cors())
 app.use(express.json())
 
-// res.setHeader("Access-Control-Allow-Origin", "*")
-// res.setHeader(
-//   "Access-Control-Allow-Methods",
-//   "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-// )
-// res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
-// res.setHeader("Access-Control-Allow-Credentials", true)
+res.setHeader("Access-Control-Allow-Origin", "*")
+res.setHeader(
+  "Access-Control-Allow-Methods",
+  "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+)
+res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+res.setHeader("Access-Control-Allow-Credentials", true)
 
 // Ou configure de forma mais específica
 // app.use((req, res, next) => {
@@ -42,22 +42,22 @@ app.use(express.json())
 // )
 
 // Middleware para configurar CORS
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*")
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  )
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
-  res.setHeader("Access-Control-Allow-Credentials", "true")
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*")
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   )
+//   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+//   res.setHeader("Access-Control-Allow-Credentials", "true")
 
-  // Lidar com a requisição OPTIONS para pre-flight
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200)
-  }
+//   // Lidar com a requisição OPTIONS para pre-flight
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200)
+//   }
 
-  next()
-})
+//   next()
+// })
 
 function getCookie(name) {
   const nameEQ = name + "="
