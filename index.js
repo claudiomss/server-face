@@ -16,7 +16,7 @@ app.use(cors())
 // Ou configure de forma mais específica
 app.use(
   cors({
-    origin: "https://deolho.site/", // Substitua pela origem do seu frontend
+    origin: "https://deolho.site/inicio/app/compra/", // Substitua pela origem do seu frontend
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
