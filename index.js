@@ -44,11 +44,21 @@ app.post("/cok", cors(), async (req, res) => {
   const data = req.body
   const { nome } = data
 
+  console.log("Received request:", data)
+
   try {
-    await supabase.from("wenhook_data").insert({ dados: nome })
+    const { error } = await supabase
+      .from("wenhook_data")
+      .insert({ dados: nome })
+
+    if (error) {
+      console.error("Error inserting data:", error)
+      return res.status(500).send("Fail")
+    }
 
     res.status(200).send("Sucesso")
   } catch (error) {
+    console.error("Catch block error:", error)
     res.status(500).send("Fail")
   }
 })

