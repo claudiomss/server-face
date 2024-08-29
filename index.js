@@ -40,6 +40,10 @@ function getCookie(name) {
 
 // Middleware para lidar com JSON no corpo da requisição
 
+app.get("/", cors(), async (req, res) => {
+  res.status(200).send("Rodando")
+})
+
 app.post("/cok", cors(), async (req, res) => {
   const data = req.body
   const { _fbc, _fbp, requestNumber } = data

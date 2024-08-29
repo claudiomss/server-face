@@ -1,57 +1,85 @@
-// const express = require("express")
-// const axios = require("axios")
-// const bodyParser = require("body-parser")
+const express = require("express")
+const axios = require("axios")
+const bodyParser = require("body-parser")
 
-// const app = express()
-// const port = 3000
+const app = express()
+const port = 3000
 
-// // Configurar o body-parser para lidar com JSON
-// app.use(bodyParser.json())
+// Configurar o body-parser para lidar com JSON
+app.use(bodyParser.json())
 
-// // Substitua estes valores pelos seus
-// const accessToken = process.env.TOKEN
-// const pixelId = process.env.PIXEL
+// Substitua estes valores pelos seus
+const accessToken = process.env.TOKEN
+const pixelId = process.env.PIXEL
 
-// // Rota para receber o webhook
-// app.post("/webhook", async (req, res) => {
-//   const eventData = req.body
+// Rota para receber o webhook
+app.post("/webhook", async (req, res) => {
+  const eventData = req.body
 
-//   // Exemplo de como você pode extrair informações do webhook
-//   const { statusTransaction, value } = eventData
+  // Exemplo de como você pode extrair informações do webhook
+  const { statusTransaction, value } = eventData
 
-//   // Montar o payload para o Facebook Conversion API
-//   const payload = {
-//     event_name: "Purchase",
-//     event_time: Math.floor(Date.now() / 1000),
-//     value: value,
-//     currency: "BRL",
-//   }
+  // Montar o payload para o Facebook Conversion API
+  const payload = {
+    event_name: "Purchase",
+    event_time: Math.floor(Date.now() / 1000),
+    value: value,
+    currency: "BRL",
+  }
 
-//   if (statusTransaction == "PAID_OUT") {
-//     try {
-//       await axios.post(`https://graph.facebook.com/v12.0/${pixelId}/events`, {
-//         data: [payload],
-//         access_token: accessToken,
-//       })
+  const dataPixel = {
+    data: [
+      {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: "website",
+        event_source_url: data.event_source_url,
+        user_data: {
+          client_ip_address: data.client_ip_address,
+          client_user_agent: data.client_user_agent,
+          fbc: data.fbc, // Passando o valor de _fbc
+          fbp: data.fbp, // Passando o valor de _fbp
+          email: data.email_hash, // Email em hash SHA256
+          // Outros dados do usuário, como phone, etc.
+        },
+        custom_data: {
+          currency: "BRL",
+          value: data.value, // Valor da compra
+          content_ids: data.content_ids,
+          contents: data.contents,
+          content_type: "product",
+          // Outros dados customizados
+        },
+      },
+    ],
+    access_token: accessToken,
+  }
 
-//       res.status(200).send("Event sent to Facebook successfully")
-//     } catch (error) {
-//       console.error(
-//         "Error sending event to Facebook:",
-//         error.response ? error.response.data : error.message
-//       )
-//       res.status(500).send("Failed to send event to Facebook")
-//     }
-//   } else res.status(402).send("Miss Pay")
-// })
+  if (statusTransaction == "PAID_OUT") {
+    try {
+      await axios.post(`https://graph.facebook.com/v12.0/${pixelId}/events`, {
+        data: [payload],
+        access_token: accessToken,
+      })
 
-// app.get("/", async (req, res) => {
-//   res.status(200).send("Funcionando")
-// })
+      res.status(200).send("Event sent to Facebook successfully")
+    } catch (error) {
+      console.error(
+        "Error sending event to Facebook:",
+        error.response ? error.response.data : error.message
+      )
+      res.status(500).send("Failed to send event to Facebook")
+    }
+  } else res.status(402).send("Miss Pay")
+})
 
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`)
-// })
+app.get("/", async (req, res) => {
+  res.status(200).send("Funcionando")
+})
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`)
+})
 
 // const express = require("express")
 // const axios = require("axios")
@@ -127,27 +155,27 @@
 //   console.log(`Servidor rodando na porta ${PORT}`)
 // })
 
-const express = require("express")
-const { createClient } = require("@supabase/supabase-js")
-const app = express()
-const cors = require("cors")
+// const express = require("express")
+// const { createClient } = require("@supabase/supabase-js")
+// const app = express()
+// const cors = require("cors")
 
-const supabaseUrl = "https://oqyirdgdlowlcifwwfez.supabase.co"
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xeWlyZGdkbG93bGNpZnd3ZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTkwMDk2MDcsImV4cCI6MjAzNDU4NTYwN30.aU_qhe7Zm_MM9F0TwmlInVGf91-ZOC58e_MG2RBYyeo"
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// const supabaseUrl = "https://oqyirdgdlowlcifwwfez.supabase.co"
+// const supabaseAnonKey =
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xeWlyZGdkbG93bGNpZnd3ZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTkwMDk2MDcsImV4cCI6MjAzNDU4NTYwN30.aU_qhe7Zm_MM9F0TwmlInVGf91-ZOC58e_MG2RBYyeo"
+// const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-app.use(express.json())
-app.use(cors())
+// app.use(express.json())
+// app.use(cors())
 
-// Ou configure de forma mais específica
-app.use(
-  cors({
-    origin: "*", // Permitir todas as origens
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos HTTP permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Headers permitidos
-  })
-)
+// // Ou configure de forma mais específica
+// app.use(
+//   cors({
+//     origin: "*", // Permitir todas as origens
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos HTTP permitidos
+//     allowedHeaders: ["Content-Type", "Authorization"], // Headers permitidos
+//   })
+// )
 
 // Define uma rota para a página web
 // app.post("/webhook", (req, res) => {
@@ -163,51 +191,51 @@ app.use(
 //   } else res.status(402).send("Miss Pay")
 // })
 
-async function openAndClosePage() {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
+// async function openAndClosePage() {
+//   const browser = await puppeteer.launch()
+//   const page = await browser.newPage()
 
-  try {
-    // Substitua pela URL da sua página
-    await page.goto("https://deolho.site/inicio/app/compra", {
-      waitUntil: "networkidle2",
-    })
+//   try {
+//     // Substitua pela URL da sua página
+//     await page.goto("https://deolho.site/inicio/app/compra", {
+//       waitUntil: "networkidle2",
+//     })
 
-    // Aguarda 10 segundos
-    // await page.waitForTimeout(10000)
-    setTimeout(async () => {
-      await browser.close()
-    }, [3000])
+//     // Aguarda 10 segundos
+//     // await page.waitForTimeout(10000)
+//     setTimeout(async () => {
+//       await browser.close()
+//     }, [3000])
 
-    // Fechar a página
-  } catch (error) {
-    console.error("Erro:", error)
-  }
-}
+//     // Fechar a página
+//   } catch (error) {
+//     console.error("Erro:", error)
+//   }
+// }
 
-app.post("/webhook", (req, res) => {
-  const eventData = req.body
+// app.post("/webhook", (req, res) => {
+//   const eventData = req.body
 
-  // Extraindo informações do webhook
-  const { statusTransaction } = eventData
+//   // Extraindo informações do webhook
+//   const { statusTransaction } = eventData
 
-  if (statusTransaction == "PAID_OUT") {
-    openAndClosePage()
-    res.status(200).send("Sucesso")
-  } else res.status(402).send("Miss Pay")
-})
+//   if (statusTransaction == "PAID_OUT") {
+//     openAndClosePage()
+//     res.status(200).send("Sucesso")
+//   } else res.status(402).send("Miss Pay")
+// })
 
-app.post("/coleta", async (req, res) => {
-  const data = req.body
+// app.post("/coleta", async (req, res) => {
+//   const data = req.body
 
-  try {
-    await supabase.from("wenhook_data").insert({ dados: data })
+//   try {
+//     await supabase.from("wenhook_data").insert({ dados: data })
 
-    res.status(200).send("Sucesso")
-  } catch (error) {
-    res.status(500).send("Fail")
-  }
-})
+//     res.status(200).send("Sucesso")
+//   } catch (error) {
+//     res.status(500).send("Fail")
+//   }
+// })
 
 // Define a porta e inicia o servidor
 const PORT = 3000
