@@ -173,7 +173,7 @@ app.post("/webhook", async (req, res) => {
         .eq("requestNumber", requestNumber)
         .single()
 
-      if (error) console.log(error)
+      console.log(error)
       console.log("Dados Banco:", data)
 
       const url = await data.urlCamp
