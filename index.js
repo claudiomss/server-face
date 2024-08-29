@@ -10,16 +10,52 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 const cors = require("cors")
 
 // Middleware para lidar com JSON no corpo da requisição
+
+// app.use(cors())
 app.use(express.json())
-app.use(cors())
+
+// res.setHeader("Access-Control-Allow-Origin", "*")
+// res.setHeader(
+//   "Access-Control-Allow-Methods",
+//   "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+// )
+// res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+// res.setHeader("Access-Control-Allow-Credentials", true)
 
 // Ou configure de forma mais específica
+// app.use((req, res, next) => {
+//   //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
+//   res.header("Access-Control-Allow-Origin", "*")
+//   //Quais são os métodos que a conexão pode realizar na API
+//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+//   app.use(cors())
+//   next()
+// })
+
+// app.use(
+//   cors({
+//     origin: "http://127.0.0.1:5500",
+//     methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+//     allowedHeaders: ["X-Requested-With", "content-type"],
+//     credentials: true,
+//   })
+// )
+
+// Middleware para configurar CORS
 app.use((req, res, next) => {
-  //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
-  res.header("Access-Control-Allow-Origin", "*")
-  //Quais são os métodos que a conexão pode realizar na API
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
-  app.use(cors())
+  res.setHeader("Access-Control-Allow-Origin", "*")
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  )
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+  res.setHeader("Access-Control-Allow-Credentials", "true")
+
+  // Lidar com a requisição OPTIONS para pre-flight
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200)
+  }
+
   next()
 })
 
