@@ -42,14 +42,14 @@ function getCookie(name) {
 
 app.post("/cok", cors(), async (req, res) => {
   const data = req.body
-  const { nome } = data
+  const { _fbc, _fbp, requestNumber } = data
 
   console.log("Received request:", data)
 
   try {
     const { error } = await supabase
       .from("wenhook_data")
-      .insert({ dados: nome })
+      .insert({ fbc: _fbc, fbp: _fbp, requestNumber: requestNumber })
 
     if (error) {
       console.error("Error inserting data:", error)

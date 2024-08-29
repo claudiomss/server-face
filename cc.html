@@ -36,11 +36,14 @@
       // Exemplo de uso:
       //   setCookie("username", "JohnDoe", 7) // Define um cookie chamado 'username' com valor 'JohnDoe' que expira em 7 dias.
 
-      async function sendPostRequest2(url) {
-        const username = getCookie("username")
-        // const username = "oaoa"
+      async function sendPostRequest2(url, requestNumber) {
+        const cookFBC = getCookie("_fbc")
+        const cookFBP = getCookie("_fbp")
+
         const dataSend = {
-          nome: username,
+          _fbc: cookFBC,
+          _fbp: cookFBP,
+          requestNumber: requestNumber,
         }
 
         try {
