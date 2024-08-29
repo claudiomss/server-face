@@ -14,14 +14,14 @@ app.use(express.json())
 app.use(cors())
 
 // Ou configure de forma mais específica
-// app.use((req, res, next) => {
-//   //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
-//   res.header("Access-Control-Allow-Origin", "*")
-//   //Quais são os métodos que a conexão pode realizar na API
-//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
-//   app.use(cors())
-//   next()
-// })
+app.use((req, res, next) => {
+  //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
+  res.header("Access-Control-Allow-Origin", "*")
+  //Quais são os métodos que a conexão pode realizar na API
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+  app.use(cors())
+  next()
+})
 
 function getCookie(name) {
   const nameEQ = name + "="
@@ -38,10 +38,7 @@ function getCookie(name) {
 // Retorna o valor do cookie 'username'.
 // console.log(username)
 
-// Middleware para lidar com JSON no corpo da requisição
-app.use(express.json())
-
-app.post("/cok", cors(), async (req, res) => {
+app.post("/cok", async (req, res) => {
   const data = req.body
   const { nome } = data
 
