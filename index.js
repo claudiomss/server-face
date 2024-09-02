@@ -83,8 +83,8 @@ app.post("/cok", cors(), async (req, res) => {
 async function sendPurchaseEvent(data) {
   const axios = require("axios")
   const accessToken =
-    "EAAHqLIBp79EBO7M9JQZCVvi0U6H56pSEY6R3eba6CckuB4Rpl7COpvVUQjk2n4SM2rBkn700upiWMQjzhEnUPfjLbWfqzZBT6gGBlTlRgiNynZAIvBYCGNLtOqzFwkiZACZADs9XZCw2EDOtDxUFbZAIJwiLtuTbnKCq98lm5iNZCKB7m0QFq49p0Czu0z52UZBXq9QZDZD"
-  const pixelId = "4636511609906695"
+    "EAAGyx4TrTyIBO9ZB3iLDoCOrSBupZCOYWtYGNNePgjB2h10EcUCHqzwwlvZADCfPneEwEEBGXkYDdiNVzS5xjnkthrdVnCZAb98vmOWqioOCvqZAFkZAaY57LHhIwLIBk6TcQIvJZCr5ceufZAg1pYBWJlc56GGvw7x1ZBVsZAa75SsAJ3ns4VoImqyUv3w2FdcQZDZD"
+  const pixelId = "1033031881833608"
   const url = `https://graph.facebook.com/v13.0/${pixelId}/events`
 
   const eventData = {
