@@ -81,7 +81,7 @@ app.post("/cok", cors(), async (req, res) => {
   }
 })
 
-async function sendPurchaseEvent(data) {
+async function sendPurchaseEvent(data, dataDB) {
   const accessToken =
     "EAAGyx4TrTyIBO9ZB3iLDoCOrSBupZCOYWtYGNNePgjB2h10EcUCHqzwwlvZADCfPneEwEEBGXkYDdiNVzS5xjnkthrdVnCZAb98vmOWqioOCvqZAFkZAaY57LHhIwLIBk6TcQIvJZCr5ceufZAg1pYBWJlc56GGvw7x1ZBVsZAa75SsAJ3ns4VoImqyUv3w2FdcQZDZD"
   const pixelId = "1033031881833608"
@@ -117,6 +117,8 @@ async function sendPurchaseEvent(data) {
     ],
     access_token: accessToken,
   }
+
+  await Promise.allSettled([supabase.from("vendas_pix").insert(dataDB)])
 
   try {
     const response = await axios.post(url, eventData)
@@ -255,7 +257,16 @@ app.post("/webhook-vinni", async (req, res) => {
 
       console.log(eventData)
 
-      await sendPurchaseEvent(eventData)
+      const dataDB = {
+        produto: "whatspy",
+        valor: value,
+        campaignName: extractCampaignName(utmCampaign),
+        adsetName: extractAdsetName(utmMedium),
+        adName: extractAdName(utmContent),
+        requestNumber: requestNumber,
+      }
+
+      await sendPurchaseEvent(eventData, dataDB)
 
       return res.status(200).send("Sucesso envio dados")
     } catch (error) {
