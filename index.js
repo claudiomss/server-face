@@ -80,14 +80,46 @@ app.post("/cok", cors(), async (req, res) => {
   }
 })
 
+app.post("/cok2", cors(), async (req, res) => {
+  const data = req.body
+  const { _fbc, _fbp, requestNumber, urlCamp, idTransaction } = data
+
+  // console.log("Received request:", data)
+
+  try {
+    const { error } = await supabase.from("wenhook_data").insert({
+      fbc: _fbc,
+      fbp: _fbp,
+      requestNumber: requestNumber,
+      urlCamp: urlCamp,
+      idTransaction: idTransaction,
+      client_ip_address:
+        req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+      client_user_agent: req.headers["user-agent"],
+    })
+
+    if (error) {
+      console.error("Error inserting data:", error)
+      return res.status(500).send("Fail")
+    }
+
+    res.status(200).send("Sucesso")
+  } catch (error) {
+    console.error("Catch block error:", error)
+    res.status(500).send("Fail")
+  }
+})
+
 async function sendPurchaseEvent(data) {
   const axios = require("axios")
-  const accessToken =
-    "EAAGyx4TrTyIBO9ZB3iLDoCOrSBupZCOYWtYGNNePgjB2h10EcUCHqzwwlvZADCfPneEwEEBGXkYDdiNVzS5xjnkthrdVnCZAb98vmOWqioOCvqZAFkZAaY57LHhIwLIBk6TcQIvJZCr5ceufZAg1pYBWJlc56GGvw7x1ZBVsZAa75SsAJ3ns4VoImqyUv3w2FdcQZDZD"
-  const pixelId = "1033031881833608"
-  const url = `https://graph.facebook.com/v13.0/${pixelId}/events`
 
-  const eventData = {
+  const accessToken2 =
+    "EAAHqLIBp79EBO7M9JQZCVvi0U6H56pSEY6R3eba6CckuB4Rpl7COpvVUQjk2n4SM2rBkn700upiWMQjzhEnUPfjLbWfqzZBT6gGBlTlRgiNynZAIvBYCGNLtOqzFwkiZACZADs9XZCw2EDOtDxUFbZAIJwiLtuTbnKCq98lm5iNZCKB7m0QFq49p0Czu0z52UZBXq9QZDZD"
+  const pixelId2 = "4636511609906695"
+
+  const url2 = `https://graph.facebook.com/v13.0/${pixelId2}/events`
+
+  const eventData2 = {
     data: [
       {
         event_name: "Purchase",
@@ -115,12 +147,13 @@ async function sendPurchaseEvent(data) {
         },
       },
     ],
-    access_token: accessToken,
+    access_token: accessToken2,
   }
 
   try {
-    const response = await axios.post(url, eventData)
-    console.log("Evento enviado com sucesso:", response.data)
+    const response2 = await axios.post(url2, eventData2)
+    // console.log("Evento enviado com sucesso:", response.data)
+    console.log("Evento enviado com sucesso:", response2.data)
   } catch (error) {
     console.error(
       "Erro ao enviar o evento:",
