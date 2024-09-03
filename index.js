@@ -118,7 +118,12 @@ async function sendPurchaseEvent(data, dataDB) {
     access_token: accessToken,
   }
 
-  await Promise.allSettled([supabase.from("vendas_pix").insert(dataDB)])
+  await Promise.allSettled([
+    supabase.from("vendas_pix").insert(dataDB),
+    axios.get(
+      "https://api.pushcut.io/EOJzw385r_u6-957qImuI/notifications/MinhaNotifica%C3%A7%C3%A3o"
+    ),
+  ])
 
   try {
     const response = await axios.post(url, eventData)
